@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Wake"
+  short_description: "Adaptive low-impact wake for one Codex thread"
+  default_prompt: "Use $codex-wake to calibrate this read-only check and continue the same thread when it becomes true."
