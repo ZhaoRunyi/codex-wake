@@ -10,7 +10,7 @@ skill_root="${CODEX_HOME:-$HOME/.codex}/skills/codex-wake"
   --probe-key example-status \
   --probe-command 'READ_ONLY_BOUNDED_COMMAND' \
   --match 'READY|FAILED' \
-  --prompt 'Overall task: 未成功；当前仍在等待，需要继续。 This watcher: reread the authoritative status; on READY continue the task, and on FAILED diagnose it.' \
+  --prompt 'Overall task: incomplete; the external condition is still pending and work must continue. This watcher: reread the authoritative status; on READY continue the task, and on FAILED diagnose it.' \
   --dry-run
 ```
 

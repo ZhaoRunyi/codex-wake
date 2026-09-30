@@ -8,9 +8,9 @@ if command -v uv >/dev/null 2>&1; then
     export UV_CACHE_DIR="${UV_CACHE_DIR:-$codex_home/uv/cache}"
     export UV_TOOL_DIR="${UV_TOOL_DIR:-$codex_home/uv/tools}"
     uv venv --python python3 "$runtime"
-    uv pip install --python "$runtime/bin/python" 'websockets>=15,<17'
+    uv pip install --python "$runtime/bin/python" 'websockets>=15,<17' tomli
 else
     python3 -m venv "$runtime"
-    "$runtime/bin/python" -m pip install --upgrade pip 'websockets>=15,<17'
+    "$runtime/bin/python" -m pip install --upgrade pip 'websockets>=15,<17' tomli
 fi
 printf 'Codex Wake runtime ready: %s\n' "$runtime/bin/python"
