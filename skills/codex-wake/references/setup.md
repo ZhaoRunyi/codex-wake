@@ -3,13 +3,13 @@
 Prerequisites are Linux/POSIX, `bash`, `screen`, Python 3.11+, and a working `codex-bg` shared
 sidebar daemon.
 
-Install `codex-bg` before `codex-wake`, then run:
+Install the repository's bundled `codex-bg` before `codex-wake`, then run:
 
 ```bash
 "${CODEX_HOME:-$HOME/.codex}/skills/codex-wake/scripts/bootstrap_runtime.sh"
 ```
 
-The runtime is stored at `${CODEX_HOME:-$HOME/.codex}/skill-runtimes/codex-wake`. Set
+Both skills share `${CODEX_HOME:-$HOME/.codex}/skill-runtimes/codex-bg`. Set
 `CODEX_WAKE_PYTHON` only when another Python environment already provides `websockets`.
 
 Check the dependencies without arming a watcher:
@@ -21,5 +21,6 @@ test -f "${CODEX_HOME:-$HOME/.codex}/skills/codex-bg/scripts/frontend_scope.py"
 
 Runtime state defaults to `${CODEX_HOME:-$HOME/.codex}/wakes`. Override it with
 `CODEX_WAKE_STATE_ROOT` only for isolation tests or an intentionally separate installation.
-Runtime resume locks live under the current user's runtime directory and are intentionally absent
-from `CODEX_HOME`; `codex-bg` recreates them after a cold start or daemon upgrade.
+Per-thread resume locks and the daemon operation lease live under the current user's runtime
+directory and are intentionally absent from `CODEX_HOME`; `codex-bg` recreates them after a cold
+start or daemon upgrade.

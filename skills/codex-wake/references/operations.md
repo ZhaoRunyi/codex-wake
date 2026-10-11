@@ -38,6 +38,7 @@ The prompt must remain actionable after a long delay:
 `status` includes worker PID liveness and is more authoritative than a stale `screen -ls` entry.
 Cancel obsolete or superseded sibling watchers explicitly.
 
-When several watchers become ready together, they may queue briefly on the shared runtime resume
-lock. This lock protects thread materialization only; accepted turns continue after the wake client
-disconnects. Never copy the lock from `CODEX_HOME` or recreate it as persistent state.
+When several watchers for the same thread become ready together, they may queue briefly on that
+thread's runtime resume lock. Watchers for different threads do not block each other. The lock
+protects materialization only; accepted turns continue after the wake client disconnects. Never
+copy runtime locks from `CODEX_HOME` or recreate them as persistent state.

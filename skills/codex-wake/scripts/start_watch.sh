@@ -3,13 +3,13 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 codex_home="${CODEX_WAKE_CODEX_HOME:-${CODEX_HOME:-$HOME/.codex}}"
-python_binary="${CODEX_WAKE_PYTHON:-$codex_home/skill-runtimes/codex-wake/bin/python}"
+python_binary="${CODEX_WAKE_PYTHON:-${CODEX_BG_PYTHON:-$codex_home/skill-runtimes/codex-bg/bin/python}}"
 [[ -x "$python_binary" ]] || python_binary="$(command -v python3 || true)"
 state_root="${CODEX_WAKE_STATE_ROOT:-$codex_home/wakes}"
-marker_script="$script_dir/thread_marker.py"
-wake_script="$script_dir/wake_thread.py"
 calibration_script="$script_dir/calibrate_poll.py"
 codex_bg_root="${CODEX_BG_SKILL_ROOT:-$codex_home/skills/codex-bg}"
+marker_script="$codex_bg_root/scripts/thread_marker.py"
+wake_script="$codex_bg_root/scripts/wake_thread.py"
 frontend_scope_script="$codex_bg_root/scripts/frontend_scope.py"
 config_guard_script="$codex_bg_root/scripts/daemon_config_guard.py"
 daemon_socket="${CODEX_APP_SERVER_SOCKET:-$codex_home/app-server-control/app-server-control.sock}"
@@ -211,8 +211,9 @@ done
 }
 [[ -d "$workdir" ]] || { echo "Workdir not found: $workdir" >&2; exit 2; }
 [[ -x "$python_binary" ]] || { echo "Shared Codex Python is missing: $python_binary" >&2; exit 2; }
-[[ -f "$frontend_scope_script" && -f "$config_guard_script" ]] || {
-    echo "codex-bg is required; install it or set CODEX_BG_SKILL_ROOT." >&2
+[[ -f "$frontend_scope_script" && -f "$config_guard_script" \
+    && -f "$marker_script" && -f "$wake_script" ]] || {
+    echo "codex-bg is required; install the bundled skill or set CODEX_BG_SKILL_ROOT." >&2
     exit 2
 }
 

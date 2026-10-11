@@ -10,8 +10,9 @@ The watcher uses adaptive polling because many services expose snapshots rather 
 
 ## Dependency
 
-Install and verify `codex-bg` first. `codex-wake` uses its shared daemon, ownership guard, and
-sidebar bridge; it must not create a second app-server. If the dependency is installed outside
+Install and verify `codex-bg` first. This repository bundles a pinned copy so the distribution is
+self-contained; `codex-wake` uses that skill's shared daemon, ownership guard, and sidebar bridge
+and must not create a second app-server. If the dependency is installed outside
 `${CODEX_HOME:-$HOME/.codex}/skills/codex-bg`, set `CODEX_BG_SKILL_ROOT`.
 
 ## Route
@@ -42,8 +43,9 @@ sidebar bridge; it must not create a second app-server. If the dependency is ins
 `codex-bg` owns extension patching and daemon version synchronization. A watcher must use that one
 daemon and must not copy, preserve, or reapply a runtime lock after an upgrade or host restart.
 
-Before delivery, wake workers serialize only the expensive materialization phase with a runtime
-`wake-resume.lock`. If the thread is already loaded they skip `thread/resume`; otherwise they resolve
-its exact rollout path from the read-only state catalog, resume with `excludeTurns: true`, and fetch
-only the newest turn. Release the materialization lock before starting or steering the continuation.
-This avoids multiplying a large-history resume when multiple watchers become ready together.
+Before delivery, wake workers serialize only the expensive materialization phase with a per-thread
+runtime lock. Different threads can wake concurrently. If the thread is already loaded they skip
+`thread/resume`; otherwise they resolve its exact rollout path from the read-only state catalog,
+resume with `excludeTurns: true`, and fetch only the newest turn. Every RPC has a bounded timeout,
+and waiting for an active turn uses authoritative polling rather than a lossy notification. Release
+the materialization lock before starting or steering the continuation.

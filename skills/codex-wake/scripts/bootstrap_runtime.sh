@@ -2,15 +2,12 @@
 set -euo pipefail
 
 codex_home="${CODEX_HOME:-$HOME/.codex}"
-runtime="${CODEX_WAKE_RUNTIME:-$codex_home/skill-runtimes/codex-wake}"
-if command -v uv >/dev/null 2>&1; then
-    export UV_PYTHON_INSTALL_DIR="${UV_PYTHON_INSTALL_DIR:-$codex_home/uv/python}"
-    export UV_CACHE_DIR="${UV_CACHE_DIR:-$codex_home/uv/cache}"
-    export UV_TOOL_DIR="${UV_TOOL_DIR:-$codex_home/uv/tools}"
-    uv venv --python python3 "$runtime"
-    uv pip install --python "$runtime/bin/python" 'websockets>=15,<17' tomli
-else
-    python3 -m venv "$runtime"
-    "$runtime/bin/python" -m pip install --upgrade pip 'websockets>=15,<17' tomli
-fi
-printf 'Codex Wake runtime ready: %s\n' "$runtime/bin/python"
+codex_bg_root="${CODEX_BG_SKILL_ROOT:-$codex_home/skills/codex-bg}"
+bootstrap="$codex_bg_root/scripts/bootstrap_runtime.sh"
+[[ -x "$bootstrap" ]] || {
+    echo "codex-bg is required; install the bundled skill or set CODEX_BG_SKILL_ROOT." >&2
+    exit 2
+}
+CODEX_HOME="$codex_home" "$bootstrap"
+printf 'Codex Wake uses the shared codex-bg runtime: %s\n' \
+    "${CODEX_BG_PYTHON:-$codex_home/skill-runtimes/codex-bg/bin/python}"

@@ -13,9 +13,11 @@
 - **Large thread is slow to wake:** verify that the thread was resumed with its catalog path and
   `excludeTurns`, and that only the newest turn was requested. Do not resume the same thread by ID
   from several workers and do not rewrite its rollout.
-- **Several ready watchers appear paused:** inspect the runtime `wake-resume.lock`. Short queuing is
-  expected while one large thread materializes; a lock file by itself is not evidence of a live
-  holder.
+- **Several same-thread watchers appear paused:** inspect the runtime
+  `wake-resume-<thread-id>.lock`. Short queuing is expected while that thread materializes; a lock
+  file by itself is not evidence of a live holder. Different thread IDs should not queue together.
+- **Wake RPC timed out:** inspect `wake.log`. Every daemon call has a deadline; increase
+  `CODEX_WAKE_RESUME_TIMEOUT` only for a demonstrated large-history resume, not for ordinary RPCs.
 - **New user message after arming:** the resumed agent must reread the thread, absorb compatible new
   constraints, and cancel obsolete watchers. It must not blindly continue a superseded task.
 - **Host restart:** detached processes and sockets do not survive. Runtime evidence remains, but the
