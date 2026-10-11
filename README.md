@@ -27,9 +27,10 @@ Restart Codex, configure and verify `codex-bg`, then run:
 The generic watcher accepts any bounded, read-only probe. Platform-specific lifecycle and health
 checks belong in the corresponding domain skill.
 
-The release was packaged and isolation-tested on 2026-09-30 against Codex CLI `0.153.0` and the
-OpenAI VS Code extension `26.901.22334`. Same-thread delivery inherits `codex-bg`'s version-sensitive
-verification requirement.
+The current implementation was synchronized from a working Remote SSH deployment on 2026-10-11
+against Codex CLI `0.162.0-alpha.17.2` and the OpenAI VS Code extension
+`26.1007.21434-linux-x64`. Same-thread delivery inherits `codex-bg`'s version-sensitive verification
+requirement and its idle-only daemon update policy.
 
 ## Security and state
 

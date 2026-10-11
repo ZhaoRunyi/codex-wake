@@ -34,8 +34,10 @@ args = parser.parse_args()
 reference_dir = (
     pathlib.Path(args.reference_dir)
     if args.reference_dir
-    else pathlib.Path(os.environ.get("CODEX_HOME", pathlib.Path.home() / ".codex"))
-    / "wakes/calibration"
+    else pathlib.Path(
+        os.environ.get("CODEX_WAKE_STATE_ROOT", pathlib.Path.home() / ".codex/wakes")
+    )
+    / "calibration"
 )
 observations_path = reference_dir / "polling_observations.jsonl"
 profiles_path = reference_dir / "polling_profiles.json"

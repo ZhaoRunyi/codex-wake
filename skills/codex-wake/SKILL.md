@@ -36,3 +36,14 @@ sidebar bridge; it must not create a second app-server. If the dependency is ins
 - A matched condition is a handoff point, not proof that the overall task succeeded.
 - Persist runtime state under `${CODEX_HOME:-$HOME/.codex}/wakes`; never commit probe commands,
   credentials, job IDs, outputs, calibration observations, thread IDs, or wake logs.
+
+## Resume and upgrade safety
+
+`codex-bg` owns extension patching and daemon version synchronization. A watcher must use that one
+daemon and must not copy, preserve, or reapply a runtime lock after an upgrade or host restart.
+
+Before delivery, wake workers serialize only the expensive materialization phase with a runtime
+`wake-resume.lock`. If the thread is already loaded they skip `thread/resume`; otherwise they resolve
+its exact rollout path from the read-only state catalog, resume with `excludeTurns: true`, and fetch
+only the newest turn. Release the materialization lock before starting or steering the continuation.
+This avoids multiplying a large-history resume when multiple watchers become ready together.

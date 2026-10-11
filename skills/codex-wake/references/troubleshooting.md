@@ -10,6 +10,12 @@
   cancel and replace the watcher. Repeated errors deliberately back off.
 - **Condition changed before delivery:** this is expected; the worker re-arms rather than waking on
   stale evidence.
+- **Large thread is slow to wake:** verify that the thread was resumed with its catalog path and
+  `excludeTurns`, and that only the newest turn was requested. Do not resume the same thread by ID
+  from several workers and do not rewrite its rollout.
+- **Several ready watchers appear paused:** inspect the runtime `wake-resume.lock`. Short queuing is
+  expected while one large thread materializes; a lock file by itself is not evidence of a live
+  holder.
 - **New user message after arming:** the resumed agent must reread the thread, absorb compatible new
   constraints, and cancel obsolete watchers. It must not blindly continue a superseded task.
 - **Host restart:** detached processes and sockets do not survive. Runtime evidence remains, but the
